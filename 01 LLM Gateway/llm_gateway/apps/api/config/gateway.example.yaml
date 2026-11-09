@@ -1,0 +1,52 @@
+server:
+  cors_origins:
+    - "${WEB_ORIGIN:-http://localhost:5173}"
+  database_path: "${GATEWAY_DB_PATH:-../../data/gateway.db}"
+
+identity:
+  api_keys:
+    - "${GATEWAY_API_KEY:-local-dev-key}"
+  rate_limit:
+    requests: 60
+    window_seconds: 60
+
+providers:
+  deepseek:
+    protocol: openai
+    base_url: "${DEEPSEEK_BASE_URL:-https://api.deepseek.com/v1}"
+    api_key: "${DEEPSEEK_API_KEY:-}"
+  openai:
+    protocol: openai
+    base_url: "${OPENAI_BASE_URL:-https://api.openai.com/v1}"
+    api_key: "${OPENAI_API_KEY:-}"
+  anthropic:
+    protocol: anthropic
+    base_url: "${ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+    api_key: "${ANTHROPIC_API_KEY:-}"
+
+models:
+  deepseek-chat:
+    provider: deepseek
+    model: deepseek-chat
+    timeout_seconds: 60
+  gpt-main:
+    provider: openai
+    model: gpt-4.1
+    timeout_seconds: 60
+  claude-main:
+    provider: anthropic
+    model: claude-sonnet-4-5
+    timeout_seconds: 60
+
+routes:
+  default:
+    prompt: default
+    candidates:
+      - deepseek-chat
+      - gpt-main
+      - claude-main
+  fast-chat:
+    prompt: default
+    candidates:
+      - deepseek-chat
+      - gpt-main
